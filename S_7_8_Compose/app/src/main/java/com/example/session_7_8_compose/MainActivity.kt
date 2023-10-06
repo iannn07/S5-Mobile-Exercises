@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +47,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
     Column (
         verticalArrangement = Arrangement.Center,
-        modifier = modifier
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(
             fontSize = 24.sp,
@@ -62,6 +64,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
         Button(onClick = { num.value += 1 }) {
             Text(text = "Plus 1")
+        }
+        Button(onClick = {
+            if(num.value <= 0){
+                num.value = 0
+            } else if (num.value > 0){
+                num.value -= 1
+            }
+        }) {
+            Text(text = "Minus 1")
         }
     }
 }
