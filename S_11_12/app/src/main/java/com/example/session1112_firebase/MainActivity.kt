@@ -75,11 +75,11 @@ fun getDetailedData(db:FirebaseFirestore){
 
 fun addData(db: FirebaseFirestore){
     val data = hashMapOf(
-        "Name" to "Louise",
+        "Name" to "Quagmire",
         "Age" to 32
     )
 
-    db.collection("class")
+    db.collection("class_1")
         .add(data)
         .addOnSuccessListener { documentReference ->
             Log.d("data", "DocumentSnapshot with ID: ${documentReference.id}")
@@ -94,6 +94,7 @@ fun addData(db: FirebaseFirestore){
 fun saveButton(db: FirebaseFirestore, modifier: Modifier = Modifier) {
     var name by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
+    var yob by remember { mutableStateOf("") }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -110,18 +111,24 @@ fun saveButton(db: FirebaseFirestore, modifier: Modifier = Modifier) {
             label = { Text("Tell me your Age") },
             onValueChange = { age = it }
         )
-        Button(onClick = { addDataInput(name, age.toInt(), db) }) {
+        OutlinedTextField(
+            value = yob,
+            label = { Text("Tell me your birth year") },
+            onValueChange = { yob = it }
+        )
+        Button(onClick = { addDataInput(name, age.toInt(), yob.toInt(), db) }) {
             Text(text = "Save")
         }
     }
 }
 
-fun addDataInput(name: String, age: Int, db: FirebaseFirestore){
+fun addDataInput(name: String, age: Int, yob: Int, db: FirebaseFirestore){
     val inputtedDdata = hashMapOf(
         "Name" to name,
-        "Age" to age
+        "Age" to age,
+        "Year" to yob
     )
-    db.collection("class_1")
+    db.collection("class_record")
         .add(inputtedDdata)
         .addOnSuccessListener { documentReference ->
             Log.d("data", "DocumentSnapshot with ID: ${documentReference.id}")
