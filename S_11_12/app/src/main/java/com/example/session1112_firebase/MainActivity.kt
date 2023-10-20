@@ -1,16 +1,24 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.session1112_firebase
 
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.session1112_firebase.ui.theme.Session1112FirebaseTheme
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,6 +30,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         getData(db)
         getDetailedData(db)
+        addData(db)
         setContent {
             Session1112FirebaseTheme {
                 // A surface container using the 'background' color from the theme
@@ -29,19 +38,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    saveButton(db)
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 fun getData(db:FirebaseFirestore){
@@ -72,10 +73,60 @@ fun getDetailedData(db:FirebaseFirestore){
         }
 }
 
-@Preview(showBackground = true)
+fun addData(db: FirebaseFirestore){
+    val data = hashMapOf(
+        "Name" to "Louise",
+        "Age" to 32
+    )
+
+    db.collection("class")
+        .add(data)
+        .addOnSuccessListener { documentReference ->
+            Log.d("data", "DocumentSnapshot with ID: ${documentReference.id}")
+        }
+        .addOnFailureListener{ e ->
+            Log.w("data", "Error adding document", e)
+        }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GreetingPreview() {
-    Session1112FirebaseTheme {
-        Greeting("Android")
+fun saveButton(db: FirebaseFirestore, modifier: Modifier = Modifier) {
+    var name by remember { mutableStateOf("") }
+    var age by remember { mutableStateOf("") }
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        OutlinedTextField(
+            value = name,
+            label = { Text("Tell me your Name") },
+            onValueChange = { name = it }
+        )
+        OutlinedTextField(
+            value = age,
+            label = { Text("Tell me your Age") },
+            onValueChange = { age = it }
+        )
+        Button(onClick = { addDataInput(name, age.toInt(), db) }) {
+            Text(text = "Save")
+        }
     }
+}
+
+fun addDataInput(name: String, age: Int, db: FirebaseFirestore){
+    val inputtedDdata = hashMapOf(
+        "Name" to name,
+        "Age" to age
+    )
+    db.collection("class_1")
+        .add(inputtedDdata)
+        .addOnSuccessListener { documentReference ->
+            Log.d("data", "DocumentSnapshot with ID: ${documentReference.id}")
+        }
+        .addOnFailureListener { e ->
+            Log.w("data", "Error adding document", e)
+        }
 }
